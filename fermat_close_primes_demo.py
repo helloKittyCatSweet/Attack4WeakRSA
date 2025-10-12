@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import math
 import os
@@ -176,7 +178,7 @@ def rsa_keygen_close(bits: int, max_gap: int, e: int = 65537) -> tuple[int, int,
         phi = (p - 1) * (q - 1)
         if math.gcd(e, phi) == 1:
             d = _inv_mod(e, phi)
-            return (p * q, e, d, p, q)
+            return p * q, e, d, p, q
 
 
 def _bytes_to_int(b: bytes) -> int:
