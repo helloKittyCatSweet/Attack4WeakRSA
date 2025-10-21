@@ -18,35 +18,70 @@ This project demonstrates how RSA becomes vulnerable when the two prime factors 
 ## 🏗️ Project Structure
 
 ```
-fermat_rsa_attack/
-├── main.py              # Main demonstration program
-├── config.py           # Configuration parameters
-├── primality.py        # Miller-Rabin primality testing
-├── prime_generator.py  # Close prime pair generation
-├── fermat_factorizer.py # Fermat factorization algorithm
-├── rsa_demo.py         # RSA encryption/decryption demo
-├── utils.py            # Utility functions
-└── README.md          # This file
+fcp/  (Fermat Close Primes)
+├── core/                     # Pure algorithms (no I/O)
+│   ├── __init__.py
+│   ├── fermat.py            # Fermat factorization algorithm
+│   ├── primality.py         # Miller-Rabin primality testing
+│   ├── prime_gen.py         # Close prime pair generation
+│   └── rsa.py               # RSA key generation & encryption
+│
+├── runner/                   # Demo orchestration & CLI
+│   ├── __init__.py
+│   ├── config.py            # Configuration (dataclass)
+│   └── demo.py              # Demo runners (Fermat & RSA)
+│
+├── utils/                    # Utilities
+│   ├── __init__.py
+│   ├── fmt.py               # Formatting functions
+│   └── validate.py          # Parameter validation (no print)
+│
+├── tests/                    # Unit tests
+│   ├── __init__.py
+│   ├── test_fermat.py
+│   ├── test_primality.py
+│   ├── test_prime_gen.py
+│   └── test_rsa.py
+│
+├── assets/                   # Resources
+│   └── Fermat_Factorization_RSA_Attack_Flowchart.svg
+│
+├── main_new.py              # CLI entry point (subcommands)
+└── README.md                # This file
 ```
 
 ## 🚀 Quick Start
 
+### Installation
+
+No external dependencies required (uses Python standard library only).
+
+```bash
+cd Attack4WeakRSA/fcp
+```
+
 ### Basic Fermat Factorization Demo
 
 ```bash
-python main.py --bits 60 --max-gap 16384 --mode fermat
+python main_new.py fermat --bits 60 --max-gap 16384
 ```
 
-### Complete RSA Demo
+### Complete RSA Attack Demo
 
 ```bash
-python main.py --bits 60 --max-gap 16384 --mode rsa --message "Hello RSA"
+python main_new.py rsa --bits 60 --max-gap 16384 --message "Hello RSA"
 ```
 
 ### Multiple Trials for Timing
 
 ```bash
-python main.py --bits 60 --max-gap 16384 --rounds 5 --mode fermat
+python main_new.py fermat --bits 60 --max-gap 16384 --rounds 5
+```
+
+### Run Unit Tests
+
+```bash
+python -m unittest discover tests
 ```
 
 ## ⚙️ Configuration Options
