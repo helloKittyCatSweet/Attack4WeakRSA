@@ -7,6 +7,8 @@ import random
 import math
 from Crypto.Util.number import getPrime, inverse, GCD
 
+from wiener_attack import WienerAttack, BunderTonienAttack, NewBoundaryAttack
+
 
 class WeakRSAGenerator:
     """生成易受Wiener攻击的弱RSA密钥"""
@@ -173,27 +175,33 @@ class WeakRSAGenerator:
                 d -= 2
 
         return d
-    
+
     def check_vulnerability(self, n, d):
         """
-        检查RSA密钥对哪些攻击方法的脆弱性
+        检查RSA密钥对各种Wiener攻击的脆弱性
 
         Returns:
-            dict: 各种攻击方法的适用性
+            dict: 包含各种攻击边界和脆弱性信息的字典
         """
-        wiener_bound = pow(n, 0.25) / 3
-        bunder_tonien_bound = 2 * self._isqrt(2 * n)
-        new_bound = self._isqrt(824264 * n // 100000)
+        wiener_attack = WienerAttack()
+        bunder_tonien_attack = BunderTonienAttack()
+        new_boundary_attack = NewBoundaryAttack()
+
+        wiener_bound = wiener_attack.get_boundary(n)
+        bt_bound = bunder_tonien_attack.get_boundary(n)
+        new_bound = new_boundary_attack.get_boundary(n)
 
         return {
-            "d": d,
-            "wiener_vulnerable": d < wiener_bound,
-            "wiener_bound": wiener_bound,
-            "bunder_tonien_vulnerable": d < bunder_tonien_bound,
-            "bunder_tonien_bound": bunder_tonien_bound,
-            "new_boundary_vulnerable": d < new_bound,
-            "new_boundary_bound": new_bound,
-            "d_bits": d.bit_length(),
-            "n_bits": n.bit_length()
+            'd': d,
+            'd_bits': d.bit_length(),
+            'wiener_bound': wiener_bound,
+            'wiener_bound_bits': wiener_bound.bit_length() if wiener_bound > 0 else 0,
+            'wiener_vulnerable': d < wiener_bound,
+            'bunder_tonien_bound': bt_bound,
+            'bunder_tonien_bound_bits': bt_bound.bit_length() if bt_bound > 0 else 0,
+            'bunder_tonien_vulnerable': d < bt_bound,
+            'new_boundary_bound': new_bound,
+            'new_boundary_bound_bits': new_bound.bit_length() if new_bound > 0 else 0,
+            'new_boundary_vulnerable': d < new_bound
         }
 
